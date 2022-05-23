@@ -2,39 +2,45 @@
 
 namespace App\Services\Event;
 
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Cache;
 
-class EventService {
-    public function __construct(public EventValidatorService $eventValidatorService) {
-       
+class EventService{
+    public function __construct(public AccountService $accountService) {
+      
     }
-    public function create(String $accountId, float $amount){
-        $account = ['id'=>$accountId,'balance'=>$amount];
-        Cache::put('account_id_'.$accountId,$account);
-    }
-    public function deposit(String $accountId, float $amount) {
-        $account = Cache::get('account_id_'.$accountId);
-        $account['balance'] += $amount;
-        $account['id'] =$accountId;
-        Cache::put('account_id_'.$accountId,$account);
-    }
-
-    public function withdraw(String $accountId, float $amount)
-    {
-        $account = Cache::get('account_id_'.$accountId);
-        $account['balance'] -= $amount;
-        $account['id'] =$accountId;
-        Cache::put('account_id_'.$accountId,$account);
-    }
-
-    public function transfer(int $origin, String $destination, float $amount)
-    {
-        $this->withdraw($origin, $amount);
+    
+    public function depostit(String $destination, int $amount){
         if(Cache::has('account_id_'.$destination)){
-            $this->deposit($destination, $amount);
+            $this->accountService->deposit($destination,$amount);
         }
         if(!Cache::has('account_id_'.$destination)){
-            $this->create($destination, $amount);
+           $this->accountService->create($destination,$amount);
+        }
+
+        return (new Response)->setContent(json_encode(['destination'=>  Cache::get('account_id_'.$destination)]))->setStatusCode(201)->header('Content-Type', 'application/json');
+    }
+
+    public function withdraw(String $origin, int $amount){
+        if(Cache::has('account_id_'.$origin)){
+            $this->accountService->withdraw($origin,$amount);
+            return (new Response)->setContent(json_encode(['origin'=>  Cache::get('account_id_'.$origin)]))->setStatusCode(201)->header('Content-Type', 'application/json');
+        }
+        if(!Cache::has('account_id_'.$origin)){
+            return (new Response(0,404))->header('Content-Type', 'application/json');
+        }
+    }
+
+    public function transfer(String $origin,String $destination,int $amount){
+        if(Cache::has('account_id_'.$origin)){
+            $this->eventService->transfer($origin,$destination,$amount);
+            return (new Response)->setStatusCode(201)->setContent(json_encode([
+                'origin' => Cache::get('account_id_'.$origin),
+                'destination' => Cache::get('account_id_'.$destination),
+            ]))->header('Content-Type', 'application/json');
+        }
+        if(!Cache::has('account_id_'.$origin)){
+            return (new Response)->setContent(0)->setStatusCode(404)->header('Content-Type', 'application/json');
         }
     }
     
