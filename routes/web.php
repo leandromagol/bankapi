@@ -24,7 +24,7 @@ $router->get('/', function () use ($router) {
 
 $router->post('/reset',function(Request $request){
     Cache::flush();
-    return (new Response)->header('Content-Type', 'application/json');
+    return (new Response)->setStatusCode(200)->setContent('OK')->header('Content-Type', 'application/json');
 });
 
 $router->get('/balance','BalanceController@index');
