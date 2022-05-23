@@ -12,7 +12,7 @@ class BalanceController extends Controller
     {
         $account = Cache::get('account_id_'.$request->account_id);
         if ($account == null){
-            return (new Response)->setStatusCode(404)->header('Content-Type', 'application/json');
+            return (new Response)->setContent(0)->setStatusCode(404)->header('Content-Type', 'application/json');
         }
         return (new Response($account['balance'],200))->header('Content-Type', 'application/json');
         
