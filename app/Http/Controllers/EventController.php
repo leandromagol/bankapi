@@ -15,7 +15,7 @@ class EventController{
        
     public function post(Request $request){
         if(!$this->eventValidatorService->validate($request)){
-            return (new Response(0,400))->header('Content-Type', 'application/json');
+            return (new Response(0,404))->header('Content-Type', 'application/json');
         }
         if($request->type == 'deposit'){
             if(Cache::has('account_id_'.$request->destination)){
@@ -30,7 +30,7 @@ class EventController{
                 $this->eventService->withdraw($request->destination,$request->amount);
             }
             if(!Cache::has('account_id_'.$request->destination)){
-                return (new Response)->setContent(0)->setStatusCode(404)->header('Content-Type', 'application/json');
+                return (new Response(0,404))->header('Content-Type', 'application/json');
             }
         }
         if($request->type == 'transfer'){

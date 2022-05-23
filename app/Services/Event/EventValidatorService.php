@@ -15,8 +15,8 @@ class EventValidatorService{
         $validator = Validator::make($request->all(), [
             'type' => 'required|in:transfer',
             'amount' => 'required|numeric',
-            'destination' => 'required|numeric',
-            'origin' => 'required|numeric',
+            'destination' => 'required',
+            'origin' => 'required',
         ]);
         if ($validator->fails()) {
             return false;
@@ -27,7 +27,7 @@ class EventValidatorService{
         $validator = Validator::make($request->all(), [
             'type' => 'required|in:deposit,withdraw',
             'amount' => 'required|numeric',
-            'destination' => 'required|numeric',
+            'destination' => 'required',
         ]);
         if ($validator->fails()) {
             return false;
