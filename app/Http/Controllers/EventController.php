@@ -46,6 +46,6 @@ class EventController{
             }
            
         }
-        return (new Response)->setContent(json_encode(['destination'=> Cache::get('account_id_'.$request->destination)]))->setStatusCode(201)->header('Content-Type', 'application/json');
+        return (new Response)->setContent(json_encode(['destination'=>  Cache::get('account_id_'.$request->destination)]))->setStatusCode(201)->header('Content-Type', 'application/json');
     }
 }
