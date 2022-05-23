@@ -33,7 +33,7 @@ class EventService{
 
     public function transfer(String $origin,String $destination,int $amount){
         if(Cache::has('account_id_'.$origin)){
-            $this->eventService->transfer($origin,$destination,$amount);
+            $this->accountService->transfer($origin,$destination,$amount);
             return (new Response)->setStatusCode(201)->setContent(json_encode([
                 'origin' => Cache::get('account_id_'.$origin),
                 'destination' => Cache::get('account_id_'.$destination),

@@ -26,6 +26,5 @@ class EventController{
         if($request->type == 'transfer'){
            return $this->eventService->transfer($request->origin,$request->destination,$request->amount);
         }
-        return (new Response)->setContent(json_encode(['destination'=>  Cache::get('account_id_'.$request->destination)]))->setStatusCode(201)->header('Content-Type', 'application/json');
     }
 }
